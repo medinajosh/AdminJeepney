@@ -14,13 +14,6 @@ export default function DashboardHome() {
       path: "/dashboard/routes",
     },
     {
-      title: "Jeepney Stops",
-      stat: 48,
-      icon: <Bus className="text-white" size={24} />,
-      color: "bg-yellow-400",
-      path: "/dashboard/jeepney-stops",
-    },
-    {
       title: "Advertisements",
       stat: 5,
       icon: <Megaphone className="text-white" size={24} />,
@@ -51,7 +44,7 @@ export default function DashboardHome() {
   ];
 
   return (
-    <div className="p-6 ml-48 bg-[#F8FAFC] min-h-screen space-y-10">
+    <div className="p-6 ml-55 bg-[#F8FAFC] min-h-screen space-y-10">
       
       {/* Welcome Header */}
       <div className="bg-white rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center shadow-sm">

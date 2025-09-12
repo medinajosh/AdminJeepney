@@ -35,7 +35,7 @@ export default function Schedule() {
   ];
 
   return (
-    <div className="p-8">
+    <div className="p-8 ml-60 ">
       <h1 className="text-3xl font-bold text-[#23B1B7] mb-2">Jeepney Schedule</h1>
       <p className="text-gray-600 mb-6">Operating hours and trip intervals for Cebu City jeepney routes.</p>
 

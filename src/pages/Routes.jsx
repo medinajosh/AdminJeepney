@@ -36,6 +36,7 @@ export default function RoutesPage() {
   const [routes, setRoutes] = useState(routesData);
   const [expandedRoute, setExpandedRoute] = useState(null); // Track which route is expanded
   const [newRoute, setNewRoute] = useState(null); // For new route modal
+  const [newStop, setNewStop] = useState(""); // For new stop input
   const [editRoute, setEditRoute] = useState(null); // For edit route modal
   const [deleteRoute, setDeleteRoute] = useState(null); // For delete confirmation modal
 
@@ -64,6 +65,21 @@ export default function RoutesPage() {
     setNewRoute((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewRoute((prev) => ({
+          ...prev,
+          mapImage: reader.result // store the image as a base64 string
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+
   const saveNewRoute = () => {
     setRoutes((prevRoutes) => [...prevRoutes, newRoute]);
     setNewRoute(null);
@@ -89,7 +105,7 @@ export default function RoutesPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto relative">
+    <div className="p-8 ml-60 max-w-6xl mx-auto relative">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-4xl font-semibold text-[#23B1B7] mb-3">Jeepney Routes</h1>
@@ -110,7 +126,14 @@ export default function RoutesPage() {
       {/* Add Route Button */}
       <button
         onClick={() =>
-          setNewRoute({ number: "", origin: "", destination: "", description: "", mapImage: "" })
+          setNewRoute({
+            number: "",
+            origin: "",
+            destination: "",
+            description: "",
+            mapImage: "",
+            stops: [] // Start with an empty array of stops
+          })
         }
         className="mb-6 px-6 py-3 bg-[#23B1B7] text-white rounded-md hover:bg-teal-600 transition ease-in-out duration-200"
       >
@@ -187,20 +210,24 @@ export default function RoutesPage() {
                   )}
 
                   {/* Action Buttons */}
-                  <div className="flex gap-4 justify-end">
+                  <div className="flex gap-4 justify-end mt-10 mr-34">
+                    {/* Edit Button */}
                     <button
-                      onClick={() => alert("Edit functionality")}
+                      onClick={() => setEditRoute({ number, origin, destination, description, mapImage, stops })}
                       className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                     >
                       Edit
                     </button>
+
+                    {/* Delete Button */}
                     <button
-                      onClick={() => alert("Delete functionality")}
+                      onClick={() => setDeleteRoute({ number, origin, destination, description, mapImage, stops })}
                       className="px-6 py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
                     >
                       Delete
                     </button>
                   </div>
+
                 </div>
               </div>
             )}
@@ -209,72 +236,233 @@ export default function RoutesPage() {
       </div>
 
       {/* Add Route Modal */}
-      {newRoute && (
-        <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-            <h2 className="text-2xl font-bold text-[#23B1B7] mb-4">Add New Route</h2>
+      {/* Add Route Modal */}
+{newRoute && (
+  <div className="fixed z-300 inset-0 bg-[rgba(0,0,0,0.5)] bg-opacity-40 flex justify-center items-center">
+    <div className="bg-white rounded-lg max-h-170  overflow-y-auto p-6 w-full sm:w-170 shadow-lg space-y-6">
+      <h2 className="text-2xl font-bold text-[#23B1B7] mb-4 text-center">Add New Route</h2>
 
-            <label className="block mb-4">
-              <span className="text-gray-700">Route Number</span>
-              <input
-                type="text"
-                name="number"
-                value={newRoute.number}
-                onChange={handleAddRouteChange}
-                className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
-              />
-            </label>
+      {/* Route Information Section */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Route Number</label>
+        <input
+          type="text"
+          name="number"
+          value={newRoute.number}
+          onChange={handleAddRouteChange}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
 
-            <label className="block mb-4">
-              <span className="text-gray-700">Origin</span>
-              <input
-                type="text"
-                name="origin"
-                value={newRoute.origin}
-                onChange={handleAddRouteChange}
-                className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
-              />
-            </label>
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Origin</label>
+        <input
+          type="text"
+          name="origin"
+          value={newRoute.origin}
+          onChange={handleAddRouteChange}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
 
-            <label className="block mb-4">
-              <span className="text-gray-700">Destination</span>
-              <input
-                type="text"
-                name="destination"
-                value={newRoute.destination}
-                onChange={handleAddRouteChange}
-                className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
-              />
-            </label>
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Destination</label>
+        <input
+          type="text"
+          name="destination"
+          value={newRoute.destination}
+          onChange={handleAddRouteChange}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
 
-            <label className="block mb-4">
-              <span className="text-gray-700">Description</span>
-              <textarea
-                name="description"
-                value={newRoute.description}
-                onChange={handleAddRouteChange}
-                rows={4}
-                className="w-full border border-gray-300 rounded px-3 py-2 mt-2 resize-none focus:ring-2 focus:ring-[#23B1B7] transition"
-              />
-            </label>
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Description</label>
+        <textarea
+          name="description"
+          value={newRoute.description}
+          onChange={handleAddRouteChange}
+          rows={4}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 resize-none focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
 
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setNewRoute(null)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={saveNewRoute}
-                className="px-4 py-2 bg-[#23B1B7] text-white rounded hover:bg-teal-600 transition"
-              >
-                Save
-              </button>
-            </div>
-          </div>
+      {/* Jeepney Stops Section */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Add Jeepney Stop</label>
+        <div className="flex">
+          <input
+            type="text"
+            value={newStop}
+            onChange={(e) => setNewStop(e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
+          />
+        
         </div>
-      )}
+      </div>
+
+      {/* Image Upload Section */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Upload Route Map</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        />
+      </div>
+
+      <div className="flex justify-end gap-3 mt-4">
+        <button
+          onClick={() => setNewRoute(null)}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={saveNewRoute}
+          className="px-4 py-2 bg-[#23B1B7] text-white rounded hover:bg-teal-600 transition"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Edit Route Modal */}
+{/* Edit Route Modal */}
+{editRoute && (
+  <div className="fixed z-100 inset-0 bg-[rgba(0,0,0,0.5)] bg-opacity-40 flex justify-center items-center">
+    <div className="bg-white rounded-lg p-6 w-full sm:w-96 shadow-lg max-h-[80vh] overflow-y-auto">
+      <h2 className="text-2xl font-bold text-[#23B1B7] mb-4 text-center">Edit Route {editRoute.number}</h2>
+
+      {/* Route Number */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Route Number</label>
+        <input
+          type="text"
+          name="number"
+          value={editRoute.number}
+          onChange={handleEditChange}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
+
+      {/* Origin */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Origin</label>
+        <input
+          type="text"
+          name="origin"
+          value={editRoute.origin}
+          onChange={handleEditChange}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
+
+      {/* Destination */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Destination</label>
+        <input
+          type="text"
+          name="destination"
+          value={editRoute.destination}
+          onChange={handleEditChange}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
+
+      {/* Description */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Description</label>
+        <textarea
+          name="description"
+          value={editRoute.description}
+          onChange={handleEditChange}
+          rows={4}
+          className="w-full border border-gray-300 rounded px-3 py-2 mt-2 resize-none focus:ring-2 focus:ring-[#23B1B7] transition"
+        />
+      </div>
+
+      {/* Image Upload Section */}
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">Upload Route Map</label>
+        {editRoute.mapImage && (
+          <img
+            src={editRoute.mapImage}
+            alt={`Route ${editRoute.number} map`}
+            className="w-full h-auto object-contain mb-4 rounded-lg shadow-md"
+          />
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                setEditRoute((prev) => ({
+                  ...prev,
+                  mapImage: reader.result, // Update the image
+                }));
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        />
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-3 mt-4">
+        <button
+          onClick={() => setEditRoute(null)}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={saveEdit}
+          className="px-4 py-2 bg-[#23B1B7] text-white rounded hover:bg-teal-600 transition"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+{/* Delete Route Confirmation Modal */}
+{deleteRoute && (
+  <div className="fixed z-100 inset-0 bg-[rgba(0,0,0,0.5)] bg-opacity-40 flex justify-center items-center">
+    <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+      <h2 className="text-xl font-semibold text-center text-red-500 mb-4">
+        Are you sure you want to delete Route {deleteRoute.number}?
+      </h2>
+      <p className="text-gray-700 mb-6 text-center">This action cannot be undone.</p>
+
+      <div className="flex justify-center gap-6">
+        <button
+          onClick={() => setDeleteRoute(null)}
+          className="px-6 py-3 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={confirmDelete}
+          className="px-6 py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+        >
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 }
