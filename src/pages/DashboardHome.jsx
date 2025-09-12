@@ -51,7 +51,7 @@ export default function DashboardHome() {
   ];
 
   return (
-    <div className="p-6 bg-[#F8FAFC] min-h-screen space-y-10">
+    <div className="p-6 ml-48 bg-[#F8FAFC] min-h-screen space-y-10">
       
       {/* Welcome Header */}
       <div className="bg-white rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center shadow-sm">

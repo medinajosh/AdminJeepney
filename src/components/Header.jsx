@@ -24,7 +24,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="flex justify-between items-center px-6 py-4 bg-white shadow-md relative">
+    <header className="flex justify-between z-100 ml-58  items-center px-6 py-4 bg-white shadow-md relative">
       {/* Title */}
       <h2 className="text-xl md:text-2xl font-bold text-[#23B1B7] tracking-wide">
         Cebu Jeepney Routes

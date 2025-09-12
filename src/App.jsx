@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -28,6 +28,23 @@ function RegisterWrapper({ setIsAuthenticated }) {
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Retrieve the authentication status from localStorage
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("isAuthenticated");
+    if (storedAuth === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  // Save the authentication status to localStorage whenever it changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      localStorage.setItem("isAuthenticated", "true");
+    } else {
+      localStorage.removeItem("isAuthenticated");
+    }
+  }, [isAuthenticated]);
 
   return (
     <Router>

@@ -3,11 +3,10 @@ import {
   Home,
   Map,
   Bus,
-  CreditCard,
+  Megaphone,
   Calendar,
   FileText,
   Settings,
-  Megaphone
 } from "lucide-react";
 import React, { useState } from "react";
 
@@ -25,14 +24,14 @@ export default function Sidebar({ setIsAuthenticated }) {
 
   const confirmLogout = () => {
     setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
     closeModal();
   };
 
-  // 📁 Menu items list
+  // 📁 Menu items list (Jeepney Stops removed)
   const menuItems = [
     { to: "/dashboard", icon: <Home size={20} />, label: "Dashboard" },
     { to: "/dashboard/routes", icon: <Map size={20} />, label: "Routes" },
-    { to: "/dashboard/jeepney-stops", icon: <Bus size={20} />, label: "Jeepney Stops" },
     { to: "/dashboard/fare-matrix", icon: <Megaphone size={20} />, label: "Advertisement" },
     { to: "/dashboard/schedule", icon: <Calendar size={20} />, label: "Schedule" },
     { to: "/dashboard/reports", icon: <FileText size={20} />, label: "Reports" },
@@ -40,29 +39,31 @@ export default function Sidebar({ setIsAuthenticated }) {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-xl rounded-r-3xl p-6 flex flex-col">
+    <aside className="w-64 bg-white fixed h-full z-100 shadow-xl rounded-r-3xl p-6 flex flex-col min-h-screen">
       <h1 className="text-2xl font-bold text-[#23B1B7] mb-10">Cebu Routes</h1>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-2 text-gray-600">
-        {menuItems.map((item) => {
-          const isActive = location.pathname === item.to;
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                isActive
-                  ? "bg-[#23B1B7] text-white shadow-sm"
-                  : "hover:bg-teal-50"
-              }`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      <div className="flex-grow overflow-y-auto">
+        <nav className="flex flex-col gap-2 text-gray-600">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
+                  isActive
+                    ? "bg-[#23B1B7] text-white shadow-sm"
+                    : "hover:bg-teal-50"
+                }`}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
 
       {/* Logout Button */}
       <div className="mt-auto">
