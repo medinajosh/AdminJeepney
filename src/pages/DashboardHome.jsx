@@ -1,4 +1,4 @@
-import { Map, Bus, Megaphone, Calendar, FileText, Settings } from "lucide-react";
+import { Map, Megaphone, Calendar, FileText, Settings } from "lucide-react";
 import jeepBear from "../assets/clear.png"; // 🧸 Use your own illustration
 import { useNavigate } from "react-router-dom";
 
@@ -47,7 +47,7 @@ export default function DashboardHome() {
     <div className="p-6 ml-55 bg-[#F8FAFC] min-h-screen space-y-10">
       
       {/* Welcome Header */}
-      <div className="bg-white rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center shadow-sm">
+      <div className="bg-white rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center shadow-md transition-transform hover:scale-105 duration-300">
         <div className="space-y-2">
           <h1 className="text-2xl font-bold text-gray-800">Hi, Admin!</h1>
           <p className="text-gray-500">What would you like to manage today?</p>
@@ -66,12 +66,12 @@ export default function DashboardHome() {
       </div>
 
       {/* Cards Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {cards.map(({ title, stat, icon, color, path }) => (
           <div
             key={title}
             onClick={() => navigate(path)}
-            className="cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-md transition duration-200 flex flex-col justify-between"
+            className="cursor-pointer bg-white p-6 rounded-2xl shadow hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             <div className="flex items-center gap-4">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center ${color}`}>

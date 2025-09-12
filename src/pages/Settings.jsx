@@ -4,96 +4,149 @@ export default function Settings() {
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [defaultPage, setDefaultPage] = useState("Dashboard");
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false); // For password change modal
+  const [currentPassword, setCurrentPassword] = useState(""); // Current password input
+  const [newPassword, setNewPassword] = useState(""); // New password input
+  const [confirmPassword, setConfirmPassword] = useState(""); // Confirm new password input
+
+  const handlePasswordChange = () => {
+    if (newPassword === confirmPassword) {
+      // Add password change logic here (send to API, etc.)
+      alert("Password changed successfully!");
+      setIsPasswordModalOpen(false); // Close modal
+    } else {
+      alert("Passwords do not match.");
+    }
+  };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto relative">
-      <h1 className="text-2xl font-bold text-[#23B1B7]">Settings</h1>
-      <p className="text-gray-600 mt-2 mb-6">Manage your app preferences and account.</p>
+    <div className="p-8 max-w-4xl mx-auto bg-gray-50 rounded-lg shadow-xl">
+      <h1 className="text-3xl font-semibold text-[#23B1B7] mb-8">Account Settings</h1>
 
       {/* Account Settings */}
-      <section className="bg-white rounded-xl shadow-md p-6 mb-6 border-l-4 border-[#23B1B7]">
-        <h2 className="text-lg font-semibold text-[#23B1B7] mb-4">Account Settings</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="block">
-            Username:
+      <section className="bg-white rounded-xl shadow-md p-8 mb-8 border-l-4 border-[#23B1B7]">
+        <h2 className="text-lg font-semibold text-[#23B1B7] mb-4">Login Info</h2>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <label className="text-gray-700 font-medium">Username</label>
             <input
               type="text"
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#23B1B7] transition"
               placeholder="Admin"
             />
-          </label>
-          <label className="block">
-            Password:
+          </div>
+          <div className="flex justify-between items-center">
+            <label className="text-gray-700 font-medium">Email</label>
             <input
-              type="password"
-              className="mt-1 w-full border border-gray-300 rounded px-3 py-2"
-              placeholder="••••••••"
+              type="email"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#23B1B7] transition"
+              placeholder="admin@example.com"
             />
-          </label>
+          </div>
         </div>
+      </section>
 
-        <button className="mt-4 bg-[#23B1B7] text-white px-4 py-2 rounded hover:bg-teal-600 transition">
+      {/* Security Settings */}
+      <section className="bg-white rounded-xl shadow-md p-8 mb-8 border-l-4 border-[#23B1B7]">
+        <h2 className="text-lg font-semibold text-[#23B1B7] mb-4">Security Settings</h2>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-700">Enable Two-Factor Authentication (2FA)</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-sm"
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-700">Enable Session Timeout</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-sm"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Password Settings */}
+      <section className="bg-white rounded-xl shadow-md p-8 mb-8 border-l-4 border-[#23B1B7]">
+        <h2 className="text-lg font-semibold text-[#23B1B7] mb-4">Password Settings</h2>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-700">Change Password</span>
+          <button
+            onClick={() => setIsPasswordModalOpen(true)}
+            className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+          >
+            Change Password
+          </button>
+        </div>
+      </section>
+
+      {/* Save Settings */}
+      <section className="bg-white rounded-xl shadow-md p-8 mb-8 border-l-4 border-[#23B1B7]">
+        <button className="w-full bg-[#23B1B7] text-white py-3 rounded-md hover:bg-teal-600 transition">
           Save Changes
         </button>
       </section>
 
-      {/* App Preferences */}
-      <section className="bg-white rounded-xl shadow-md p-6 mb-6 border-l-4 border-[#23B1B7]">
-        <h2 className="text-lg font-semibold text-[#23B1B7] mb-4">App Preferences</h2>
+      {/* Change Password Modal */}
+      {isPasswordModalOpen && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-lg w-96">
+            <h3 className="text-xl font-semibold text-[#23B1B7] mb-6">Change Password</h3>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-gray-700">Dark Mode</span>
-            <input
-              type="checkbox"
-              checked={darkMode}
-              onChange={() => setDarkMode(!darkMode)}
-              className="toggle toggle-sm"
-            />
-          </div>
+            {/* Current Password */}
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium">Current Password</label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#23B1B7] transition"
+                placeholder="••••••••"
+              />
+            </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-gray-700">Enable Notifications</span>
-            <input
-              type="checkbox"
-              checked={notifications}
-              onChange={() => setNotifications(!notifications)}
-              className="toggle toggle-sm"
-            />
-          </div>
+            {/* New Password */}
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium">New Password</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#23B1B7] transition"
+                placeholder="••••••••"
+              />
+            </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-gray-700">Default Page</span>
-            <select
-              value={defaultPage}
-              onChange={(e) => setDefaultPage(e.target.value)}
-              className="border border-gray-300 rounded px-3 py-2"
-            >
-              <option>Dashboard</option>
-              <option>Routes</option>
-              <option>Schedule</option>
-            </select>
+            {/* Confirm New Password */}
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium">Confirm New Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#23B1B7] transition"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setIsPasswordModalOpen(false)}
+                className="px-6 py-3 bg-gray-300 rounded-md hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePasswordChange}
+                className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              >
+                Save Changes
+              </button>
+            </div>
           </div>
         </div>
-      </section>
-
-      {/* Data Controls */}
-      <section className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[#23B1B7]">
-        <h2 className="text-lg font-semibold text-[#23B1B7] mb-4">Data Controls</h2>
-
-        <div className="space-y-3">
-          <button className="w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm text-gray-700">
-            Clear Route Cache
-          </button>
-          <button className="w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm text-gray-700">
-            Export Settings
-          </button>
-          <button className="w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm text-gray-700">
-            Import Settings
-          </button>
-        </div>
-      </section>
+      )}
     </div>
   );
 }

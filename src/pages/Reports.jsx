@@ -43,7 +43,7 @@ export default function Reports() {
       : feedbackData.filter((item) => item.type === filter);
 
   return (
-    <div className="p-8 max-w-5xl mx-auto relative">
+    <div className="p-8 ml-60 mr-w-5xl mx-auto relative">
       <h1 className="text-2xl font-bold text-[#23B1B7]">Reports</h1>
       <p className="text-gray-600 mt-2 mb-6">
         User feedback and route insights from the community.
@@ -107,11 +107,7 @@ export default function Reports() {
       </div>
 
       {/* Export Button */}
-      <div className="mt-8 flex justify-end">
-        <button className="flex items-center gap-2 bg-[#23B1B7] text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition">
-          <Download size={16} /> Export Report
-        </button>
-      </div>
+      
     </div>
   );
 }
