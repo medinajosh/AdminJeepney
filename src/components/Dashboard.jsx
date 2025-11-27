@@ -3,10 +3,10 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 import DashboardHome from "../pages/DashboardHome";
-import RoutesPage from "../pages/Routes";
-import JeepneyStops from "../pages/JeepneyStops";
-import FareMatrix from "../pages/FareMatrix";
-import Schedule from "../pages/Schedule";
+import JeepneyCodes from "../pages/JeepneyCodes";
+import Location from "../pages/Location";
+import Advertisement from "../pages/Advertisement";
+import News from "../pages/News";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
 
@@ -23,10 +23,10 @@ export default function Dashboard({ setIsAuthenticated }) {
         <main className="p-6 flex-1 overflow-y-auto">
           <Routes>
             <Route path="/" element={<DashboardHome />} />
-            <Route path="/routes" element={<RoutesPage />} />
-            <Route path="/jeepney-stops" element={<JeepneyStops />} />
-            <Route path="/fare-matrix" element={<FareMatrix />} />
-            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/location" element={<Location />} />
+            <Route path="/jeepneycodes" element={<JeepneyCodes />} />
+            <Route path="/advertisement" element={<Advertisement />} />
+            <Route path="/news" element={<News />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

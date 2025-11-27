@@ -1,44 +1,142 @@
-import { Map, Megaphone, Calendar, FileText, Settings } from "lucide-react";
-import jeepBear from "../assets/clear.png"; // 🧸 Use your own illustration
+import { useEffect, useState } from "react";
+import { Map, Megaphone, Calendar, FileText, Settings, Newspaper, LucideLetterText } from "lucide-react";
+import { supabase } from "../config/supabase";
+import jeepBear from "../assets/clear.png";
 import { useNavigate } from "react-router-dom";
 
 export default function DashboardHome() {
   const navigate = useNavigate();
+  const [jeepneyCodeCount, setJeepneyCodeCount] = useState(0);
+  const [LocationCount, setLocationCount] = useState(0);
+  const [AdvertisementCount, setAdvertisementCount] = useState(0);
+  const [NewsCount, setNewsCount] = useState(0);
+  const [ReportsCount, setReportsCount] = useState(0);
+  
+
+  useEffect(() => {
+    const fetchJeepneyCount = async () => {
+      const { count, error } = await supabase
+        .from("routes")
+        .select("*", { count: "exact", head: true });
+
+      if (error) {
+        console.error("Error fetching Jeepney Codes count:", error);
+      } else {
+        setJeepneyCodeCount(count);
+      }
+    };
+
+    fetchJeepneyCount();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchLocationCount = async () => {
+      const { count, error } = await supabase
+        .from("location")
+        .select("*", { count: "exact", head: true });
+
+      if (error) {
+        console.error("Error fetching Location count:", error);
+      } else {
+        setLocationCount(count);
+      }
+    };
+
+    fetchLocationCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchAdvetisementCount = async () => {
+      const { count, error } = await supabase
+        .from("advertisements")
+        .select("*", { count: "exact", head: true });
+
+      if (error) {
+        console.error("Error fetching Advertisement count:", error);
+      } else {
+        setAdvertisementCount(count);
+      }
+    };
+
+    fetchAdvetisementCount();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchNewsCount = async () => {
+      const { count, error } = await supabase
+        .from("news")
+        .select("*", { count: "exact", head: true });
+
+      if (error) {
+        console.error("Error fetching News count:", error);
+      } else {
+        setNewsCount(count);
+      }
+    };
+
+    fetchNewsCount();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchReportsCount = async () => {
+      const { count, error } = await supabase
+        .from("feedback")
+        .select("*", { count: "exact", head: true });
+
+      if (error) {
+        console.error("Error fetching Feedback count:", error);
+      } else {
+        setReportsCount(count);
+      }
+    };
+
+    fetchReportsCount();
+  }, []);
 
   const cards = [
     {
-      title: "Active Routes",
-      stat: 12,
+      title: "Location",
+      stat: LocationCount,
       icon: <Map className="text-white" size={24} />,
       color: "bg-[#23B1B7]",
-      path: "/dashboard/routes",
+      path: "/dashboard/location",
+    },
+    {
+      title: "Jeepney Codes",
+      stat: jeepneyCodeCount,
+      icon: <LucideLetterText className="text-white" size={24} />,
+      color: "bg-[#2899B5]",
+      path: "/dashboard/jeepneycodes",
     },
     {
       title: "Advertisements",
-      stat: 5,
+      stat: AdvertisementCount,
       icon: <Megaphone className="text-white" size={24} />,
-      color: "bg-red-400",
-      path: "/dashboard/fare-matrix",
+      color: "bg-[#2888B5]",
+      path: "/dashboard/advertisement",
     },
     {
-      title: "Schedules",
-      stat: 17,
-      icon: <Calendar className="text-white" size={24} />,
-      color: "bg-green-400",
-      path: "/dashboard/schedule",
+      title: "News",
+      stat: NewsCount,
+      icon: <Newspaper className="text-white" size={24} />,
+      color: "bg-[#2876B5]",
+      path: "/dashboard/news",
     },
     {
       title: "Reports",
-      stat: 22,
+      stat: ReportsCount,
       icon: <FileText className="text-white" size={24} />,
-      color: "bg-blue-400",
+      color: "bg-[#2860B5]",
       path: "/dashboard/reports",
     },
     {
       title: "Settings",
       stat: null,
       icon: <Settings className="text-white" size={24} />,
-      color: "bg-purple-400",
+      color: "bg-[#7C7E82]",
       path: "/dashboard/settings",
     },
   ];
@@ -52,11 +150,32 @@ export default function DashboardHome() {
           <h1 className="text-2xl font-bold text-gray-800">Hi, Admin!</h1>
           <p className="text-gray-500">What would you like to manage today?</p>
           <div className="flex flex-wrap gap-4 text-sm mt-3">
-            <button className="text-[#23B1B7] hover:underline">Manage Routes</button>
-            <button className="text-[#23B1B7] hover:underline">Jeepney Stops</button>
-            <button className="text-[#23B1B7] hover:underline">Schedules</button>
-            <button className="text-[#23B1B7] hover:underline">View Reports</button>
-          </div>
+          <button
+            onClick={() => navigate("/dashboard/location")}
+            className="text-[#23B1B7] hover:underline"
+          >
+            Manage Routes
+          </button>
+          <button
+            onClick={() => navigate("/dashboard/JeepneyCodes")}
+            className="text-[#23B1B7] hover:underline"
+          >
+            Jeepney Codes
+          </button>
+          <button
+            onClick={() => navigate("/dashboard/News")}
+            className="text-[#23B1B7] hover:underline"
+          >
+            News
+          </button>
+          <button
+            onClick={() => navigate("/dashboard/Advertisement")}
+            className="text-[#23B1B7] hover:underline"
+          >
+            Advertisement
+          </button>
+        </div>
+
         </div>
         <img
           src={jeepBear}

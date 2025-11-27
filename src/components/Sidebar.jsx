@@ -7,8 +7,11 @@ import {
   Calendar,
   FileText,
   Settings,
+  
+  
 } from "lucide-react";
 import React, { useState } from "react";
+import News from "../pages/News";
 
 export default function Sidebar({ setIsAuthenticated }) {
   const location = useLocation(); // 📍 Get current route path
@@ -31,9 +34,10 @@ export default function Sidebar({ setIsAuthenticated }) {
   // 📁 Menu items list (Jeepney Stops removed)
   const menuItems = [
     { to: "/dashboard", icon: <Home size={20} />, label: "Dashboard" },
-    { to: "/dashboard/routes", icon: <Map size={20} />, label: "Routes" },
-    { to: "/dashboard/fare-matrix", icon: <Megaphone size={20} />, label: "Advertisement" },
-    { to: "/dashboard/schedule", icon: <Calendar size={20} />, label: "Schedule" },
+    { to: "/dashboard/location", icon: <Map size={20} />, label: "Location" },
+    { to: "/dashboard/jeepneycodes", icon: <Bus size={20} />, label: "Jeepney Codes" },
+    { to: "/dashboard/advertisement", icon: <Megaphone size={20} />, label: "Advertisement" },
+    { to: "/dashboard/news", icon: <Megaphone size={20} />, label: "News" },
     { to: "/dashboard/reports", icon: <FileText size={20} />, label: "Reports" },
     { to: "/dashboard/settings", icon: <Settings size={20} />, label: "Settings" },
   ];

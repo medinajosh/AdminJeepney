@@ -1,30 +1,84 @@
 import { useState, useRef, useEffect } from "react";
 import { Bell } from "lucide-react";
+import { supabase } from "../config/supabase"; // ✅ your Supabase client
 
 export default function Header() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const dropdownRef = useRef(null);
 
-  // Close dropdown on click outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const notifications = [
-    { id: 1, message: "Route 12A has been updated." },
-    { id: 2, message: "New jeepney stops added in Lahug." },
-    { id: 3, message: "User reported incorrect route for 03B." },
-  ];
+  // ✅ Realtime listener for new feedback
+  useEffect(() => {
+    const channel = supabase
+      .channel("feedback-changes")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "feedback" },
+        (payload) => {
+          console.log("Realtime payload:", payload); // 👀 Debugging
+          setNotifications((prev) => [
+            {
+              id: payload.new.id,
+              message: `📝 New feedback from ${payload.new.first_name} ${payload.new.last_name}`,
+            },
+            ...prev,
+          ]);
+        }
+      )
+      .subscribe();
+
+    // Cleanup when component unmounts
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // ✅ Polling fallback (every 10s) in case Realtime is off
+  useEffect(() => {
+    const fetchLatestFeedback = async () => {
+      const { data, error } = await supabase
+        .from("feedback")
+        .select("id, first_name, last_name, created_at")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error("Error fetching feedback:", error.message);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        const latest = data[0];
+        // Add only if not already in notifications
+        if (!notifications.find((n) => n.id === latest.id)) {
+          setNotifications((prev) => [
+            {
+              id: latest.id,
+              message: `📝 New feedback from ${latest.first_name} ${latest.last_name}`,
+            },
+            ...prev,
+          ]);
+        }
+      }
+    };
+
+    const interval = setInterval(fetchLatestFeedback, 10000); // check every 10s
+    return () => clearInterval(interval);
+  }, [notifications]);
 
   return (
-    <header className="flex justify-between z-100 ml-58  items-center px-6 py-4 bg-white shadow-md relative">
+    <header className="flex justify-between z-100 ml-58 items-center px-6 py-4 bg-white shadow-md relative">
       {/* Title */}
       <h2 className="text-xl md:text-2xl font-bold text-[#23B1B7] tracking-wide">
         Cebu Jeepney Routes
@@ -70,8 +124,11 @@ export default function Header() {
                 </li>
               )}
             </ul>
-            <div className="px-4 py-2 text-xs text-right text-[#23B1B7] hover:underline cursor-pointer">
-              View all
+            <div
+              onClick={() => setNotifications([])} // ✅ Clear notifications
+              className="px-4 py-2 text-xs text-right text-[#23B1B7] hover:underline cursor-pointer"
+            >
+              Clear all
             </div>
           </div>
         )}
